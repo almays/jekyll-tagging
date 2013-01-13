@@ -1,5 +1,6 @@
 require 'nuggets/range/quantile'
 require 'erb'
+require 'translit'
 
 module Jekyll
 
@@ -35,10 +36,10 @@ module Jekyll
           data = { 'layout' => layout, 'posts' => posts.sort.reverse! }
 
           name = yield data if block_given?
-
+          filename = Translit.convert((name || tag).dup)
           site.pages << TagPage.new(
             site, site.source, site.config["tag_#{type}_dir"],
-            "#{name || tag}#{site.layouts[data['layout']].ext}", data
+            "#{filename}#{site.layouts[data['layout']].ext}", data.merge('tag' => (name || tag))
           )
         end
       }
@@ -98,7 +99,7 @@ module Jekyll
     end
 
     def tag_url(tag, type = :page, site = Tagger.site)
-      url = File.join('', site.config["tag_#{type}_dir"], ERB::Util.u(tag))
+      url = File.join('', site.config["tag_#{type}_dir"], ERB::Util.u(Translit.convert(tag.dup)))
       site.permalink_style == :pretty ? url : url << '.html'
     end
 

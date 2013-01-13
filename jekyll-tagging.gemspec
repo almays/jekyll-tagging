@@ -28,4 +28,5 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<ruby-nuggets>, [">= 0"])
   end
+  s.add_dependency(%q<translit>)
 end
